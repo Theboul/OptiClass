@@ -5,8 +5,8 @@ package opticlass;
  * @author Usuario
  */
 public class Aula {
-    private int id;
-    private int capacidad;
+    public int id;
+    public int capacidad;
 
     public Aula(int id, int capacidad) {
         this.id = id;
