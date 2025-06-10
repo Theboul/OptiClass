@@ -1,3 +1,4 @@
+#Constructor de la Clase ResultadosAsignacion:
 
 class ResultadoAsignacion:
     def __init__(self, asignaciones, valor_objetivo):

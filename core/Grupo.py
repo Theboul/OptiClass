@@ -1,3 +1,4 @@
+#Constructor de la Clase Grupo:
 
 class Grupo:
     def __init__(self, id_grupo, cantidad_estudiantes, materia):

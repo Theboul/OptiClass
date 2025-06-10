@@ -1,3 +1,4 @@
+#Constructor de la Clase Horario:
 
 class Horario:
     def __init__(self, id_horario, bloque):

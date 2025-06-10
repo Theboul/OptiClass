@@ -1,3 +1,4 @@
+#Constructor de la Clase Parametros:
 
 class Parametros:
     def __init__(self, delta, lambda_penalizacion, aulas, grupos, horarios):

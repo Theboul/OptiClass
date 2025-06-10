@@ -1,3 +1,4 @@
+#Constructor de la Clase Aula:
 
 class Aula:
     def __init__(self, id_aula, capacidad, piso):

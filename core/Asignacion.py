@@ -1,3 +1,4 @@
+#Constructor de la Clase Asignacion:
 
 class Asignacion:
     def __init__(self, grupo, aula, horario):
