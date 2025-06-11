@@ -1,17 +1,31 @@
-#Constructor de la Clase Aula:
 
 class Aula:
-    def __init__(self, id_aula, capacidad, piso):
-        if id_aula <= 0:
-            raise ValueError("ID del aula debe ser psoitivo")
-        if capacidad <= 0:
-            raise ValueError("Capacidad del aula debe ser positiva")
-        if piso < 0:
-            raise ValueError("Piso del aula no puede ser negativo")
+    #Constructor de la Clase Aula:
+    def __init__(self, id_aula: int, capacidad: int, piso: int):
+        if not isinstance(id_aula, int) or id_aula <= 0:
+            raise ValueError("ID del aula debe ser un entero positivo.")
         
-        self.id_aula = id_aula
-        self.capacidad = capacidad
-        self.piso = piso
+        if not isinstance(capacidad, int) or capacidad <= 0:
+            raise ValueError("Capacidad del aula debe ser un entero positivo.")
+        
+        if not isinstance(piso, int) or piso < 0:
+            raise ValueError("Piso del aula debe ser un entero no negativo.")
+        
+        self._id_aula = id_aula
+        self._capacidad = capacidad
+        self._piso = piso
+    
+    @property
+    def id_aula(self) -> int:
+        return self._id_aula
+
+    @property
+    def capacidad(self) -> int:
+        return self._capacidad
+
+    @property
+    def piso(self) -> int:
+        return self._piso
     
     def __str__(self):
         return f"Aula(id={self.id_aula}, capacidad={self.capacidad}, piso={self.piso})"
