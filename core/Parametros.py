@@ -51,3 +51,25 @@ class Parametros:
     def __str__(self):
         return (f"Parametros(delta={self.delta}, lambda={self.lambda_penalizacion}, "
                 f"aulas={self.aulas}, grupos={self.grupos}, horarios={self.horarios})")
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Parametros':
+        aulas = [Aula.from_dict(a) for a in data['aulas']]
+        grupos = [Grupo.from_dict(g) for g in data['grupos']]
+        horarios = [Horario.from_dict(h) for h in data['horarios']]
+        return cls(
+            delta=data['delta'],
+            lambda_penalizacion=data['lambda_penalizacion'],
+            aulas=aulas,
+            grupos=grupos,
+            horarios=horarios
+        )
+
+    def to_dict(self):
+        return {
+            "delta": self.delta,
+            "lambda_penalizacion": self.lambda_penalizacion,
+            "aulas": [a.to_dict() for a in self.aulas],
+            "grupos": [g.to_dict() for g in self.grupos],
+            "horarios": [h.to_dict() for h in self.horarios]
+        }

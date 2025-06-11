@@ -29,3 +29,18 @@ class Grupo:
 
     def __str__(self):
         return f"Grupo(id={self.id_grupo}, cantidad_estudiantes={self.cantidad_estudiantes}, materia='{self.materia}')"
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Grupo':
+        return cls(
+            id_grupo=data['id_grupo'],
+            cantidad_estudiantes=data['cantidad_estudiantes'],
+            materia=data['materia']
+        )
+    
+    def to_dict(self):
+        return {
+            "id_grupo": self.id_grupo,
+            "cantidad_estudiantes": self.cantidad_estudiantes,
+            "materia": self.materia
+        }

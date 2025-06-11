@@ -29,3 +29,21 @@ class Aula:
     
     def __str__(self):
         return f"Aula(id={self.id_aula}, capacidad={self.capacidad}, piso={self.piso})"
+    
+
+    #Constructor para la carga de datos mediante JSON
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Aula':
+        return cls(
+            id_aula=data['id_aula'],
+            capacidad=data['capacidad'],
+            piso=data['piso']
+        )
+    
+    def to_dict(self):
+        return {
+            "id_aula": self.id_aula,
+            "capacidad": self.capacidad,
+            "piso": self.piso
+        }
+

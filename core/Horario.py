@@ -25,3 +25,16 @@ class Horario:
 
     def __str__(self):
         return f"Horario(id={self.id_horario}, bloque='{self.bloque}')"
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> 'Horario':
+        return cls(
+            id_horario=data['id_horario'],
+            bloque=data['bloque']
+        )
+    
+    def to_dict(self):
+        return {
+            "id_horario": self.id_horario,
+            "bloque": self.bloque
+        }
