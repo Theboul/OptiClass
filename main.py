@@ -4,6 +4,7 @@ from core.Horario import Horario
 from core.Parametros import Parametros
 from Solver_MILP.ModeloAsignacion import ModeloAsignacion
 
+from gui.InterfazView import iniciar_interfaz
 def crear_aulas() -> list[Aula]:
     """Crea las 16 aulas según el enunciado."""
     aulas = []
@@ -84,4 +85,4 @@ def main():
         print(f"\nError: {e}")
 
 if __name__ == "__main__":
-    main()
+    iniciar_interfaz()
