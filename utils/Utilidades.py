@@ -1,10 +1,13 @@
-import json
+
 from core.Parametros import Parametros
+from core.ResultadoAsignacion import ResultadoAsignacion
 
 import pandas as pd
 
+import sys
+import os
 import csv
-from core.ResultadoAsignacion import ResultadoAsignacion
+import json
 
 def cargar_json(path: str) -> Parametros:
     with open(path, 'r', encoding='utf-8') as f:
@@ -71,8 +74,6 @@ def cargar_csv(ruta_csv):
         }
 
 
-
-
 def guardar_resultado_en_csv(resultado: ResultadoAsignacion, ruta: str):
     with open(ruta, mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file, delimiter=';')
@@ -82,8 +83,8 @@ def guardar_resultado_en_csv(resultado: ResultadoAsignacion, ruta: str):
             "Nro Grupo", "Materia", "Estudiantes",
             "Nro Aula", "Capacidad Aula", "Piso Aula",
             "Nro Horario", "Bloque",
-            "Espacio libre", "Subutilización penalizada",
-            "Porcentaje de utilización (%)"
+            "Espacio libre", "Subutilizacion penalizada",
+            "Porcentaje de utilizacion (%)"
         ])
 
         delta = resultado.parametros.delta
@@ -123,13 +124,19 @@ def guardar_resultado_en_csv(resultado: ResultadoAsignacion, ruta: str):
         
         promedio_utilizacion = total_porcentaje / total_asignaciones if total_asignaciones > 0 else 0
         promedio_subutilizacion = total_subutilizacion / total_asignaciones if total_asignaciones > 0 else 0
-
+        penalizacion_total = total_subutilizacion * lambda_
         writer.writerow([])
         writer.writerow(["delta", delta])
         writer.writerow(["lambda_penalizacion", lambda_])
-        writer.writerow(["Valor objetivo (Z):", round(resultado.valor_objetivo, 2)])
-        writer.writerow(["Utilización promedio de aulas (%):", round(promedio_utilizacion, 2)])
-        writer.writerow(["Promedio subutilización penalizada:", round(promedio_subutilizacion, 2)]) 
+        writer.writerow(["Valor funcion objetivo (Z):", round(resultado.valor_objetivo, 2)])
+        writer.writerow(["Penalización total aplicada:", round(penalizacion_total, 2)])
+        writer.writerow(["Utilizacion promedio de aulas (%):", round(promedio_utilizacion, 2)])
+        writer.writerow(["Promedio subutilizacion penalizada:", round(promedio_subutilizacion, 2)]) 
 
-    
-      
+
+def obtener_ruta_recurso(nombre_archivo):
+    """
+    Devuelve la ruta absoluta a un recurso, sea en ejecución normal
+    """
+    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+    return os.path.join(base_path, nombre_archivo)

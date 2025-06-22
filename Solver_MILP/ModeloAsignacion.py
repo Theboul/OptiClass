@@ -75,7 +75,7 @@ class ModeloAsignacion:
         for (grupo, aula, _), var_x in self.variables_asignacion.items():
             var_u = self.variables_subutilizacion[(grupo, aula, _)]
             espacio_libre = aula.capacidad - grupo.cantidad_estudiantes
-            umbral = delta * aula.capacidad
+            umbral = delta
             self.solver.Add(var_u >= (espacio_libre - umbral) * var_x)
             self.solver.Add(var_u >= 0)
 
