@@ -45,7 +45,7 @@ class MainWindow:
         self._icono_ventana(ruta_icono)
         self.label_inicio = ttk.Label(
             self.contenedor_formulario, 
-            text="Seleccione 'New / Nuevo' o cargue un archivo JSON para comenzar."
+            text="Seleccione 'New / Nuevo' o cargue un archivo .json o Excel(.cvs) para comenzar."
         )
         self.label_inicio.pack(pady=20)
 

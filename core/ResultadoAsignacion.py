@@ -2,8 +2,9 @@ from core.Asignacion import Asignacion
 from core.Parametros import Parametros
 from typing import List
 
+# === Clase ResultadoAsignacion ===
 class ResultadoAsignacion:
-    #Constructor de la Clase ResultadosAsignacion:
+    #Constructor de la Clase ResultadosAsignacion: Representa los resultados obtenidos tras ejecutar el modelo de asignación.
     def __init__(self, asignaciones: List['Asignacion'], valor_objetivo: float, parametros: 'Parametros'):
        if asignaciones is None:
             raise ValueError("La lista de asignaciones no puede ser nula.")

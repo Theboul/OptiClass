@@ -1,7 +1,7 @@
 import re
-
+# === Clase Horario ===
 class Horario:
-    #Constructor de la Clase Horario:
+    #Constructor de la Clase Horario: Representa un bloque horario con formato HH:MM-HH:MM
     def __init__(self, id_horario: int, bloque: str):
         if not isinstance(id_horario, int) or id_horario <= 0:
             raise ValueError("ID del horario debe ser un entero positivo.")

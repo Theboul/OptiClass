@@ -19,27 +19,33 @@ class AppMenuBar:
         """Crea la estructura del menú con todas sus opciones."""
         archivo_menu = tk.Menu(self.menu_principal, tearoff=0)
         
-        # Opciones principales
+        # Opciones principales del Menu
         archivo_menu.add_command(
             label="Nuevo",
             command=self.controller.new_form
         )
+
+        archivo_menu.add_separator()
+
         archivo_menu.add_command(
             label="Cargar Archivo JSON",
             command=self.controller.file_dialogs.cargar_json
         )
+        
+        archivo_menu.add_command(
+            label="Cargar Archivo Excel",
+            command=self.controller.file_dialogs.cargar_excel
+        )
+
         archivo_menu.add_command(
             label="Guardar Archivo JSON",
             command=lambda: self.controller.file_dialogs.guardar_json(self.controller.parametros)
         )
+
         archivo_menu.add_command(
-            label="Cargar Archivo CSV",
-            command=self.controller.file_dialogs.cargar_csv
-        )
-        archivo_menu.add_command(
-            label="Guardar Archivo CSV",
-            command=lambda: self.controller.file_dialogs.guardar_csv(
-                getattr(self.controller, 'resultado', None)
+            label="Guardar Archivo Excel",
+            command=lambda: self.controller.file_dialogs.guardar_excel(
+                self.controller.parametros
             )
         )
         

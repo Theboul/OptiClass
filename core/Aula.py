@@ -1,6 +1,6 @@
-
+# === Clase Aula ===
 class Aula:
-    #Constructor de la Clase Aula:
+    #Constructor de la Clase Aula: Representa un aula con ID, capacidad y piso.
     def __init__(self, id_aula: int, capacidad: int, piso: int):
         if not isinstance(id_aula, int) or id_aula <= 0:
             raise ValueError("ID del aula debe ser un entero positivo.")
@@ -31,7 +31,7 @@ class Aula:
         return f"Aula(id={self.id_aula}, capacidad={self.capacidad}, piso={self.piso})"
     
 
-    #Constructor para la carga de datos mediante JSON
+    #Permite crear una instancia desde un diccionario: Constructor para la carga de datos mediante JSON
     @classmethod
     def from_dict(cls, data: dict) -> 'Aula':
         return cls(

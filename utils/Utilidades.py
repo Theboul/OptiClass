@@ -2,8 +2,6 @@
 from core.Parametros import Parametros
 from core.ResultadoAsignacion import ResultadoAsignacion
 
-import pandas as pd
-
 import sys
 import os
 import csv
@@ -20,58 +18,23 @@ def guardar_json(parametros: Parametros, ruta: str):
         json.dump(parametros.to_dict(), f, indent=4)
 
 
-def cargar_csv(ruta_csv):
-    with open(ruta_csv, mode='r', encoding='utf-8') as file:
-        reader = csv.reader(file, delimiter=';')
+def guardar_excel(parametros: Parametros, ruta: str):
+    parametros.to_excel(ruta)
 
-        grupos, aulas, horarios = [], [], []
-        delta, lambda_penalizacion = 0.0, 0.0
 
-        next(reader, None)  # saltar encabezado
+def cargar_excel(ruta: str) -> Parametros:
+    return Parametros.from_excel(ruta)
 
-        for row in reader:
-            if not row or all(c.strip() == "" for c in row):
-                continue
 
-            clave = row[0].strip().lower()
-            if clave == "delta" and len(row) > 1:
-                try:
-                    delta = float(row[1])
-                except ValueError:
-                    pass
-                continue
 
-            if clave == "lambda_penalizacion" and len(row) > 1:
-                try:
-                    lambda_penalizacion = float(row[1])
-                except ValueError:
-                    pass
-                continue
 
-            try:
-                grupo_id = int(row[0])
-                materia = row[1]
-                estudiantes = int(row[2])
-                aula_id = int(row[3])
-                capacidad = int(row[4])
-                piso = int(row[5])
-                horario_id = int(row[6])
-                bloque = row[7]
 
-                grupos.append([grupo_id, materia, estudiantes])
-                aulas.append([aula_id, capacidad, piso])
-                horarios.append([horario_id, bloque])
-            except (ValueError, IndexError):
-                continue
-
-        df_grupos = pd.DataFrame(grupos, columns=["Grupo", "Materia", "Estudiantes"])
-        df_aulas = pd.DataFrame(aulas, columns=["Aula", "Capacidad", "Piso"])
-        df_horarios = pd.DataFrame(horarios, columns=["Horario", "Bloque"])
-
-        return df_grupos, df_aulas, df_horarios, {
-            "delta": delta,
-            "lambda": lambda_penalizacion
-        }
+def obtener_ruta_recurso(nombre_archivo):
+    """
+    Devuelve la ruta absoluta a un recurso, sea en ejecución normal
+    """
+    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
+    return os.path.join(base_path, nombre_archivo)
 
 
 def guardar_resultado_en_csv(resultado: ResultadoAsignacion, ruta: str):
@@ -132,11 +95,3 @@ def guardar_resultado_en_csv(resultado: ResultadoAsignacion, ruta: str):
         writer.writerow(["Penalización total aplicada:", round(penalizacion_total, 2)])
         writer.writerow(["Utilizacion promedio de aulas (%):", round(promedio_utilizacion, 2)])
         writer.writerow(["Promedio subutilizacion penalizada:", round(promedio_subutilizacion, 2)]) 
-
-
-def obtener_ruta_recurso(nombre_archivo):
-    """
-    Devuelve la ruta absoluta a un recurso, sea en ejecución normal
-    """
-    base_path = getattr(sys, '_MEIPASS', os.path.abspath("."))
-    return os.path.join(base_path, nombre_archivo)

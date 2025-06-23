@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
-from utils.Utilidades import guardar_json, cargar_json, guardar_resultado_en_csv, cargar_csv
+from utils.Utilidades import guardar_json, cargar_json, guardar_excel, cargar_excel
 from core.Parametros import Parametros
 import traceback
 
@@ -18,7 +18,7 @@ class FileDialogs:
     def _configurar_tipos_archivo(self):
         """Configura los tipos de archivo para los diálogos"""
         self.json_types = [('Archivos JSON', '*.json')]
-        self.csv_types = [('Archivos CSV', '*.csv')]
+        self.excel_types = [('Archivos Excel', '*.xlsx')]
         self.all_types = [('Todos los archivos', '*.*')]
 
     def cargar_json(self):
@@ -78,58 +78,61 @@ class FileDialogs:
                     e
                 )
 
-    def cargar_csv(self):
-        """Maneja el diálogo y proceso de carga de archivos CSV"""
+
+    def cargar_excel(self):
         ruta = filedialog.askopenfilename(
-            filetypes=self.csv_types + self.all_types,
-            title="Seleccionar archivo CSV con datos"
+            filetypes=self.excel_types + self.all_types,
+            title="Seleccionar archivo Excel con parámetros"
         )
 
         if not ruta:
             return
 
         try:
-            data = cargar_csv(ruta)
-            if len(data) != 4:
-                raise ValueError("El archivo CSV no tiene el formato correcto")
-                
-            self.controller.cargar_datos_desde_dataframes(*data)
+            parametros = cargar_excel(ruta)
+            if not isinstance(parametros, Parametros):
+                raise ValueError("El archivo no contiene parámetros válidos")
+
+            self.controller.cargar_datos_desde_parametros(parametros)
+            messagebox.showinfo(
+                "Carga exitosa",
+                "Los parámetros se cargaron correctamente desde el archivo Excel."
+            )
         except Exception as e:
             self._mostrar_error_detallado(
-                "Error al cargar CSV",
-                "No se pudo cargar el archivo CSV con los datos.",
+                "Error al cargar Excel",
+                "No se pudo cargar el archivo Excel con los parámetros.",
                 e
             )
 
-    def guardar_csv(self, resultado):
-        """Maneja el diálogo y proceso de guardado de archivos CSV"""
-        if not resultado or not hasattr(resultado, 'asignaciones'):
-            messagebox.showerror(
-                "Error", 
-                "No hay resultados válidos para guardar. Resuelva el problema primero."
-            )
+
+
+    def guardar_excel(self, parametros):
+        if not isinstance(parametros, Parametros):
+            messagebox.showerror("Error", "Los parámetros no son válidos para guardar.")
             return
 
         ruta = filedialog.asksaveasfilename(
-            defaultextension=".csv",
-            filetypes=self.csv_types,
-            title="Guardar resultados como CSV",
-            initialfile="resultados_asignacion"
+            defaultextension=".xlsx",
+            filetypes=self.excel_types,
+            title="Guardar parámetros como Excel",
+            initialfile="parametros_aulas"
         )
 
         if ruta:
             try:
-                guardar_resultado_en_csv(resultado, ruta)
+                guardar_excel(parametros, ruta)
                 messagebox.showinfo(
                     "Guardado exitoso",
-                    f"Los resultados se guardaron correctamente en:\n{ruta}"
+                    f"Los parámetros se guardaron correctamente en:\n{ruta}"
                 )
             except Exception as e:
                 self._mostrar_error_detallado(
                     "Error al guardar",
-                    "No se pudieron guardar los resultados en el archivo CSV.",
+                    "No se pudieron guardar los parámetros en el archivo Excel.",
                     e
                 )
+
 
     def _mostrar_error_detallado(self, titulo, mensaje, error):
         """Muestra un mensaje de error detallado con traza completa"""

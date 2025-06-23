@@ -1,6 +1,6 @@
-
+# === Clase Grupo ===
 class Grupo:
-    #Constructor de la Clase Grupo:
+    #Constructor de la Clase Grupo: Representa un grupo de estudiantes asociado a una materia.
     def __init__(self, id_grupo: int, cantidad_estudiantes: int, materia: str):
         if not isinstance(id_grupo, int) or id_grupo <= 0:
             raise ValueError("ID del grupo debe ser un entero positivo.")

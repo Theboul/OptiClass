@@ -2,8 +2,9 @@ from core.Aula import Aula
 from core.Grupo import Grupo
 from core.Horario import Horario
 
+# === Clase Asignacion ===
 class Asignacion:
-    #Constructor de la Clase Asignacion:
+    #Constructor de la Clase Asignacion: Representa la asignación de un grupo a un aula en un horario
     def __init__(self, grupo: 'Grupo', aula: 'Aula', horario: 'Horario'):
         if grupo is None or aula is None or horario is None:
             raise ValueError("Grupo, Aula y Horario no pueden ser nulos.")
