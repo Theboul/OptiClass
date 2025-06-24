@@ -80,28 +80,37 @@ class ModeloAsignacion:
             self.solver.Add(var * grupo.cantidad_estudiantes <= aula.capacidad)
 
     def _restriccion_subutilizacion(self) -> None:
-        """Calcula la penalización por espacio no utilizado más allá del umbral delta."""
+        """Agrega la restricción de subutilización penalizada correctamente."""
         delta = self.parametros.delta
-        for (grupo, aula, _), var_x in self.variables_asignacion.items():
-            var_u = self.variables_subutilizacion[(grupo, aula, _)]
-            espacio_libre = aula.capacidad - grupo.cantidad_estudiantes
-            umbral = delta
-            self.solver.Add(var_u >= (espacio_libre - umbral) * var_x)
+
+        for (grupo, aula, horario), var_x in self.variables_asignacion.items():
+            var_u = self.variables_subutilizacion[(grupo, aula, horario)]
+
+            # Umbral delta como porcentaje de la capacidad del aula
+            umbral = delta * aula.capacidad
+
+            # Si el grupo es asignado, se penaliza si se supera el umbral
+            expr = (aula.capacidad - grupo.cantidad_estudiantes - umbral) * var_x
+
+            # U_ijt ≥ max(0, (Cj − Si − δ*Cj)) * x_ijt
+            self.solver.Add(var_u >= expr)
             self.solver.Add(var_u >= 0)
 
     def _configurar_objetivo(self) -> None:
-        """Define la función objetivo: maximizar estudiantes asignados y minimizar penalización."""
         objetivo = self.solver.Objective()
         lambda_penalizacion = self.parametros.lambda_penalizacion
-        
-        # Maximizar estudiantes asignados
-        for (grupo, _, _), var in self.variables_asignacion.items():
+
+        for (grupo, aula, _), var in self.variables_asignacion.items():
             objetivo.SetCoefficient(var, grupo.cantidad_estudiantes)
-        
-        # Minimizar espacio subutilizado
-        for var in self.variables_subutilizacion.values():
-            objetivo.SetCoefficient(var, -lambda_penalizacion)
-            
+
+        for (grupo, aula, _), var_u in self.variables_subutilizacion.items():
+            umbral = self.parametros.delta * aula.capacidad
+            exceso = aula.capacidad - grupo.cantidad_estudiantes - umbral
+            if exceso > 0:
+                objetivo.SetCoefficient(var_u, -lambda_penalizacion)
+            else:
+                objetivo.SetCoefficient(var_u, 0)  # sin penalización si no hay exceso
+
         objetivo.SetMaximization()
 
     def _procesar_resultado(self, status: int) -> ResultadoAsignacion:
@@ -117,3 +126,31 @@ class ModeloAsignacion:
                     asignaciones.append(Asignacion(grupo, aula, horario))
             return ResultadoAsignacion(asignaciones, valor_objetivo, self.parametros)
         raise RuntimeError("No se encontró solución óptima o factible.")
+    
+    def _verificar_coherencia_variables(self):
+        """
+        Verifica si las variables activadas por el solver son las mismas
+        a las que se les asignó coeficientes en la función objetivo.
+        """
+        print("\n=== VERIFICACIÓN DE COHERENCIA ENTRE VARIABLES Y COEFICIENTES ===")
+
+        objetivo = self.solver.Objective()
+        inconsistencias = 0
+
+        for (grupo, aula, horario), var in self.variables_asignacion.items():
+            activa = var.solution_value() > 0.5
+            tiene_coef = objetivo.GetCoefficient(var) != 0
+
+            etiqueta = f"x_{grupo.id_grupo}_{aula.id_aula}_{horario.id_horario}"
+            if activa and not tiene_coef:
+                print(f"❌ {etiqueta}: ACTIVADA pero sin coeficiente (NO contribuye a Z)")
+                inconsistencias += 1
+            elif activa and tiene_coef:
+                print(f"✅ {etiqueta}: ACTIVADA y con coeficiente")
+            elif not activa and tiene_coef:
+                print(f"🟡 {etiqueta}: NO activada pero tiene coeficiente (esto está bien)")
+
+        if inconsistencias == 0:
+            print("🎉 Todo en orden: todas las variables activadas contribuyen a Z.")
+        else:
+            print(f"⚠️ {inconsistencias} variables activadas no tienen coeficiente en la función objetivo.")

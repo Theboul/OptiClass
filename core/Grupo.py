@@ -27,6 +27,12 @@ class Grupo:
     def materia(self) -> str:
         return self._materia
 
+    def __eq__(self, other):
+        return isinstance(other, Grupo) and self.id_grupo == other.id_grupo
+
+    def __hash__(self):
+        return hash(self.id_grupo)
+
     def __str__(self):
         return f"Grupo(id={self.id_grupo}, cantidad_estudiantes={self.cantidad_estudiantes}, materia='{self.materia}')"
     

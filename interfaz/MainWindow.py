@@ -45,7 +45,7 @@ class MainWindow:
         self._icono_ventana(ruta_icono)
         self.label_inicio = ttk.Label(
             self.contenedor_formulario, 
-            text="Seleccione 'New / Nuevo' o cargue un archivo .json o Excel(.cvs) para comenzar."
+            text="Seleccione 'New / Nuevo' o cargue un archivo .json o Excel(.xlsx) para comenzar."
         )
         self.label_inicio.pack(pady=20)
 
@@ -102,6 +102,7 @@ class MainWindow:
             raise FileNotFoundError(f"Icono no encontrado: {ruta_icono}")
         
         self.root.iconbitmap(ruta_icono)
+
 
     def _limpiar_tablas(self):
         for widget in self.contenedor_formulario.winfo_children():
@@ -194,8 +195,12 @@ class MainWindow:
             modelo = ModeloAsignacion(self.parametros)
             self.resultado = modelo.resolver()
             
+            # modelo._verificar_coherencia_variables()
+
             # Mostrar resultados
             self.results_dialog.mostrar_resultados_detallados(self.resultado)
+
+            self.resultado.mostrar_resultado()
             
         except Exception as e:
             import traceback

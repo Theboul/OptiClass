@@ -23,6 +23,12 @@ class Horario:
     def bloque(self) -> str:
         return self._bloque
 
+    def __eq__(self, other):
+        return isinstance(other, Horario) and self.id_horario == other.id_horario
+
+    def __hash__(self):
+        return hash(self.id_horario)
+
     def __str__(self):
         return f"Horario(id={self.id_horario}, bloque='{self.bloque}')"
     

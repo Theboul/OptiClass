@@ -27,6 +27,13 @@ class Aula:
     def piso(self) -> int:
         return self._piso
     
+    def __eq__(self, other):
+        return isinstance(other, Aula) and self.id_aula == other.id_aula
+
+    def __hash__(self):
+        return hash(self.id_aula)
+
+
     def __str__(self):
         return f"Aula(id={self.id_aula}, capacidad={self.capacidad}, piso={self.piso})"
     
